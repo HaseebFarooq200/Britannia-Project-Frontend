@@ -9,6 +9,9 @@ module.exports = {
         sans: ["Public Sans", "sans-serif"],
         inter: ["Inter", "sans-serif"]
       },
+      backgroundImage: {
+        "homepageimage": "url('/src/assets/images/HomePageBackgroundImage.svg')",
+      },
     },
   },
   plugins: [],

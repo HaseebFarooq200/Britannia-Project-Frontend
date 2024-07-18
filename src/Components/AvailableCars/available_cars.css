@@ -1,0 +1,13 @@
+/* Example CSS to style the scrollbar */
+div::-webkit-scrollbar {
+    width: 5px;
+}
+
+div::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    border-radius: 10px;
+}
+
+div::-webkit-scrollbar-track {
+    background: transparent;
+}
