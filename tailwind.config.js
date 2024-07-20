@@ -11,6 +11,7 @@ module.exports = {
       },
       backgroundImage: {
         "homepageimage": "url('/src/assets/images/HomePageBackgroundImage.svg')",
+        "loginpageimage": "url('/src/assets/images/LoginPageImage.svg')",
       },
     },
   },

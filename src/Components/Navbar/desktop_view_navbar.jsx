@@ -1,15 +1,18 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../App';
 
 const DesktopViewNavbar = () => {
+    const navigate = useNavigate()
     const { state, dispatch } = useContext(AuthContext)
 
     const handleLogin = async () => {
+        navigate("/login")
         dispatch({ type: "USER", payload: true })
     }
 
     const handleLogout = async () => {
+        navigate("/")
         dispatch({ type: "USER", payload: false })
     }
 

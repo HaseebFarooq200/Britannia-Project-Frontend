@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../App';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaWhatsapp } from "react-icons/fa6";
 import { MdCall } from "react-icons/md";
@@ -12,6 +12,7 @@ import { LuLogIn } from "react-icons/lu";
 
 
 const MobileViewNavbar = () => {
+    const navigate = useNavigate()
     const [mobileView, setMobileView] = useState(false)
     const { state, dispatch } = useContext(AuthContext)
 
@@ -21,10 +22,12 @@ const MobileViewNavbar = () => {
 
 
     const handleLogin = async () => {
+        navigate('/login')
         dispatch({ type: "USER", payload: true })
     }
 
     const handleLogout = async () => {
+        navigate('/')
         dispatch({ type: "USER", payload: false })
     }
     return (
