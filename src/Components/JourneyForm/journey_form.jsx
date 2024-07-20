@@ -4,14 +4,14 @@ import { FaLocationArrow } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { GrSubtractCircle } from "react-icons/gr";
 import Calandar from "../Calander/calander"
+import Error from "../../Components/ErrorInputValidation/error"
 import './journey_form.css'
 
 const JourneyForm = ({ ToggleAvailableCars }) => {
 
-
-    const [numberOfPassengers, setNumberOfPassengers] = useState(0)
-    const [numberOfLuggages, setNumberOfLuggages] = useState(0)
     const [isOneTrip, setIsOneTrip] = useState(true)
+    const [destination_error, setDestinationError] = useState(false);
+    const [arrival_error, setArrivalError] = useState(false);
 
     const ToggleRadioButton = async (payload) => {
         setIsOneTrip(payload)
@@ -23,39 +23,37 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
             arrival: "",
             trip_type: "",
             passengers_count: 1,
-            luggage_count: 0
+            luggage_count: 0,
         })
 
-    const passangersAdd = async () => {
-        setNumberOfPassengers(numberOfPassengers + 1)
-        setFormData({
-            ...formData,
-            passengers_count: numberOfPassengers
-        });
-    }
+    const passangersAdd = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            passengers_count: Number(prevData.passengers_count) + 1,
+        }));
+    };
 
-    const passengersSubtract = async () => {
-        setNumberOfPassengers(numberOfPassengers - 1)
-        setFormData({
-            ...formData,
-            passengers_count: numberOfPassengers
-        });
-    }
-    const luggagesAdd = async () => {
-        setNumberOfLuggages(numberOfLuggages + 1)
-        setFormData({
-            ...formData,
-            luggage_count: numberOfLuggages
-        });
-    }
+    const passengersSubtract = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            passengers_count: prevData.passengers_count > 1 ? Number(prevData.passengers_count) - 1 : 1,
+        }));
+    };
 
-    const luggagesSubtract = async () => {
-        setNumberOfLuggages(numberOfLuggages - 1)
-        setFormData({
-            ...formData,
-            luggage_count: numberOfLuggages
-        });
-    }
+    const luggagesAdd = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            luggage_count: Number(prevData.luggage_count) + 1,
+        }));
+    };
+
+    const luggagesSubtract = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            luggage_count: prevData.luggage_count > 0 ? Number(prevData.luggage_count) - 1 : 0,
+        }));
+    };
+
 
     const handleInputChangeFormData = async (e) => {
         const { name, value } = e.target;
@@ -65,7 +63,27 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
         });
 
     };
-    console.log("ONE", isOneTrip)
+
+
+    const handleSubmitButton = async (e) => {
+        localStorage.setItem('journey_form', JSON.stringify(formData))
+
+        setDestinationError(false);
+        setArrivalError(false);
+        switch (true) {
+            case formData.destination.trim() === '':
+                setDestinationError(true);
+                break;
+            case formData.arrival.trim() === '':
+                setArrivalError(true);
+                break;
+            default:
+                setArrivalError(false);
+                setDestinationError(false);
+                ToggleAvailableCars()
+        }
+
+    }
 
     return (
         <div className='flex flex-col border border-2 border-[#FFFFFF] rounded-[30px] mt-5 p-8 md:w-[90%] mx-auto ' >
@@ -78,7 +96,9 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
                     placeholder='From:'
                     className='w-[100%] text-[#73788C] font-poppins bg-transparent focus:outline-none'
                     onChange={handleInputChangeFormData} />
+
             </div>
+            {destination_error && <Error />}
             <div className='flex bg-[#FFE8C6] space-x-2 p-2 rounded-lg mt-4'>
                 <MdLocationPin className='text-[#D89B1C] text-[20px]' />
                 <input
@@ -89,6 +109,8 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
                     className='w-[100%] text-[#73788C] font-poppins bg-transparent focus:outline-none'
                     onChange={handleInputChangeFormData} />
             </div>
+            {arrival_error && <Error />}
+
             <label className='flex space-x-2 items-center justify-around mt-4 '>
                 <div className='flex space-x-2 items-center '>
                     <input type="radio" name="trip_type" value="one_trip"
@@ -111,20 +133,37 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
                     <span className='text-[#F1F1F1]'>Round Trip</span>
                 </div>
             </label>
+
             <div className='flex justify-around mt-4 '>
                 <div className='flex flex-col '>
                     <div className=' text-[#F1F1F1] text-center p-2' >Passengers</div>
-                    <div className='flex items-center space-x-2'>
+                    <div className='flex items-center justify-center space-x-2 '>
                         <GrSubtractCircle className='cursor-pointer text-[#FFAF37] text-[22px]' onClick={passengersSubtract} />
-                        <div className='bg-[#FFE8C6]  text-[20px] py-2 px-8 rounded-lg'>{formData.passengers_count}</div>
+                        <input
+                            type='number'
+                            name='passengers_count'
+                            value={formData.passengers_count}
+                            onChange={handleInputChangeFormData}
+                            className='journey-input-passengers bg-[#FFE8C6] text-[20px] py-2 px-4 rounded-lg w-[30%] text-center justify-self-center focus:outline-none' />
+                        {/* <div
+                            className='bg-[#FFE8C6] text-[20px] py-2 px-8 rounded-lg ' >
+                            2
+                        </div> */}
                         <IoMdAddCircle className='cursor-pointer text-[#FFAF37] text-[24px]' onClick={passangersAdd} />
                     </div>
                 </div>
                 <div className='flex flex-col'>
                     <div className=' text-[#F1F1F1] text-center p-2' >Luggages</div>
-                    <div className='flex items-center space-x-2'>
+                    <div className='flex items-center justify-center space-x-2 '>
                         <GrSubtractCircle className='cursor-pointer text-[#FFAF37] text-[22px]' onClick={luggagesSubtract} />
-                        <div className='bg-[#FFE8C6]  text-[20px] py-2 px-8 rounded-lg'>{formData.luggage_count}</div>
+                        <input
+                            type='number'
+                            name='luggage_count'
+                            value={formData.luggage_count}
+                            onChange={handleInputChangeFormData}
+                            className='.journey-input-luggages bg-[#FFE8C6] text-[20px] py-2 px-4 rounded-lg w-[30%] text-center justify-self-center focus:outline-none' />
+
+                        {/* <div className='bg-[#FFE8C6]  text-[20px] py-2 px-8 rounded-lg'>{formData.luggage_count}</div> */}
                         <IoMdAddCircle className='cursor-pointer text-[#FFAF37] text-[24px]' onClick={luggagesAdd} />
                     </div>
                 </div>
@@ -147,14 +186,11 @@ const JourneyForm = ({ ToggleAvailableCars }) => {
                 </div>
             </div>
 
-            <div className='bg-[#FBBC05] rounded-lg text-center cursor-pointer p-2 mt-6' onClick={ToggleAvailableCars} >
+            <div className='bg-[#FBBC05] rounded-lg text-center cursor-pointer p-2 mt-6' onClick={handleSubmitButton} >
                 <button className='text-[#3B5998] font-poppins font-bold text-[14px] leading-[24px] tracking-[1px]' >
                     GET A QOUTE / BOOK NOW
                 </button>
             </div>
-
-
-
         </div>
     );
 }

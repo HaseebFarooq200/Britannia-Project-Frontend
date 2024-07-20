@@ -1,0 +1,7 @@
+.login-input-email::placeholder {
+    font-size: 12px;
+}
+
+.login-input-password::placeholder {
+    font-size: 12px;
+}

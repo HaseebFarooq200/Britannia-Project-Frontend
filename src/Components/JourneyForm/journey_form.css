@@ -25,3 +25,13 @@ input[type="radio"]:checked::before {
     border-radius: 50%;
     content: '';
 }
+
+.journey-input-passengers::placeholder {
+    font-size: 20px;
+    color: black;
+}
+
+.journey-input-luggages::placeholder {
+    font-size: 20px;
+    color: black;
+}
